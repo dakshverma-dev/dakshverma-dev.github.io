@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Silver Letter | Eternal Blyss Demo</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:'EB Garamond';src:url('assets/garamond.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Montserrat';src:url('assets/montserrat.ttf') format('truetype');font-weight:400;font-display:swap}
+*{box-sizing:border-box}html,body{margin:0;width:1080px;height:1920px;background:#3d0103;overflow:hidden}
+#root{position:relative;width:100%;height:100%;overflow:hidden;color:#5a1020;font-family:'EB Garamond',serif;background:#3d0103}
+.clip{position:absolute;inset:0}.opening{position:absolute;top:470px;left:90px;right:90px;text-align:center;color:#edddbd;font-size:50px;letter-spacing:1px}
+/* Envelope group: 940 × 652 photo envelope, moved as one piece. Flap hinge = top edge, flap tip at 49.64% / 65.46%. */
+.env-group{position:absolute;left:0;top:0;width:1080px;height:652px;transform-origin:50% 50%}
+.env-piece{position:absolute;left:70px;top:0;width:940px;height:652px;pointer-events:none}
+.env-photo{background:url('assets/envelope-photo.webp') 0 0/100% 100% no-repeat}
+.flap-shape{clip-path:polygon(0% 0%,0.36% 0.21%,0.72% 1.86%,1.15% 3.52%,1.58% 4.76%,2.01% 5.79%,2.44% 7.55%,2.87% 8.58%,3.30% 9.20%,47.70% 64.01%,48.64% 64.94%,49.64% 65.46%,50.65% 64.94%,51.58% 64.01%,96.56% 9.41%,96.99% 8.79%,97.42% 7.96%,97.85% 6.72%,98.28% 5.48%,98.71% 4.14%,99.14% 2.48%,99.57% 1.34%,99.78% 0.21%,100% 0%)}
+.pocket-shape{clip-path:polygon(0% 0%,0.36% 0.21%,0.72% 1.86%,1.15% 3.52%,1.58% 4.76%,2.01% 5.79%,2.44% 7.55%,2.87% 8.58%,3.30% 9.20%,47.70% 64.01%,48.64% 64.94%,49.64% 65.46%,50.65% 64.94%,51.58% 64.01%,96.56% 9.41%,96.99% 8.79%,97.42% 7.96%,97.85% 6.72%,98.28% 5.48%,98.71% 4.14%,99.14% 2.48%,99.57% 1.34%,99.78% 0.21%,100% 0%,100% 100%,0% 100%)}
+.env-shadow{border-radius:8px;box-shadow:0 34px 70px rgba(18,0,1,.62),0 10px 22px rgba(0,0,0,.38);z-index:0}
+.env-inside{z-index:1}.env-inside .env-photo,.env-inside .inside-shade{position:absolute;inset:0}
+.env-inside .env-photo{filter:brightness(.42) saturate(1.15)}
+.inside-shade{background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,.08) 26%,rgba(0,0,0,.18) 48%,rgba(0,0,0,.55) 66%)}
+.flap{z-index:6;transform-origin:50% 0}
+.flap>div{position:absolute;inset:0}
+.flap-inner{opacity:0}.flap-inner .env-photo,.flap-inner .flap-crease{position:absolute;inset:0}
+.flap-inner .env-photo{filter:brightness(.66) saturate(1.1)}
+.flap-crease{background:linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,0) 28%)}
+.flap-shade{background:#120001;opacity:0}.flap-glow{background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(255,210,200,.10) 100%);opacity:0}
+.card-well{position:absolute;left:0;top:-1300px;width:1080px;height:1944px;overflow:hidden;z-index:3;pointer-events:none}
+.letter{position:absolute;left:130px;top:1330px;width:820px;height:1266px;transform-origin:50% 50%}
+.paper{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 22px rgba(25,0,2,.5))}
+.pocket{z-index:4}
+.letter-content{position:relative;height:100%;width:100%;padding:232px 98px 110px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.kicker{margin:0;font-family:'Montserrat',sans-serif;font-size:24px;line-height:1.35;letter-spacing:5px;text-transform:uppercase}
+.anniversary{margin:4px 0 0;font-size:136px;line-height:.93;color:#695746;font-weight:400;letter-spacing:-5px}
+.silver{margin:4px 0 0;font-size:28px;line-height:1.2;letter-spacing:3px}
+.names{margin:28px 0 0;font-size:82px;line-height:1.08;font-weight:400;letter-spacing:-2px;white-space:nowrap}
+.names span{font-size:62px;padding:0 7px;font-style:italic}
+.invitation{margin:22px 0 0;font-size:33px;line-height:1.22}
+.rule{width:130px;height:2px;background:#9a6b57;flex-shrink:0;margin:28px 0 22px}
+.date{margin:0;font-family:'Montserrat',sans-serif;font-size:26px;line-height:1.35;letter-spacing:1px}
+.time{font-size:35px;line-height:1.25;margin:8px 0 0}
+.venue{margin:22px 0 0;font-size:52px;line-height:1.1;font-weight:400}
+.city{margin:4px 0 0;font-size:33px;line-height:1.2}
+.card-note{margin:28px 0 0;font-size:32px;line-height:1.15;text-align:center}
+.seal-wrap{position:absolute;left:452px;top:316px;width:170px;height:180px;z-index:7}
+.seal{border:0;padding:0;background:transparent;cursor:pointer;width:100%;height:100%;display:block;border-radius:50%;outline-offset:10px}.seal:focus-visible{outline:4px solid #f4e5c8}.seal img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0px 5px 6px rgba(20,0,0,.5))}
+.tap{position:absolute;left:120px;right:120px;top:1352px;text-align:center;margin:0;color:#ead4b6;font-family:'Montserrat',sans-serif;font-size:26px;letter-spacing:3px}
+.closing{position:absolute;left:140px;right:140px;top:1730px;text-align:center;color:#ead4b6;font-size:38px;line-height:1.2;margin:0}.closing small{display:block;font-family:'Montserrat',sans-serif;font-size:21px;letter-spacing:4px;margin-top:17px;text-transform:uppercase}
+
+.demo-return { position: fixed; z-index: 5000; left: 12px; top: 12px; background: #260e14; color: #fff0d9; padding: 8px 13px; border: 1px solid #ba9a6c; font: 13px/1.4 system-ui,sans-serif; text-decoration: none; }
+.demo-return:focus-visible { outline: 2px solid #fff0d9; outline-offset: 4px; }
+.demo-rsvp-status { margin-top: 12px; text-align: center; }
+.demo-rsvp-status:empty { display: none; }
+</style>
+</head>
+<body>
+<a class="demo-return" href="../../index.html#collection">← Eternal Blyss Gallery</a>
+<div id="root" data-composition-id="main" data-start="0" data-duration="26" data-width="1080" data-height="1920">
+<section id="stationery-scene" class="clip" data-start="0" data-duration="26" data-track-index="0">
+<div class="opening">A love worth celebrating</div>
+<div class="env-group">
+<div class="env-piece env-shadow" aria-hidden="true"></div>
+<div class="env-piece env-inside flap-shape" aria-hidden="true"><div class="env-photo"></div><div class="inside-shade"></div></div>
+<div class="card-well" data-layout-allow-overflow><article class="letter" aria-label="Arun and Leela's 25th wedding anniversary invitation">
+<img class="paper" src="assets/lace-card.png" alt="" width="815" height="1258">
+<div class="letter-content">
+<p class="kicker line-one">Celebrating our</p><div class="anniversary line-one">25</div><p class="silver line-one">WEDDING ANNIVERSARY</p>
+<h1 class="names">Arun <span>&amp;</span> Leela</h1>
+<p class="invitation">Twenty-five years of love,<br>laughter and togetherness.<br>Join us to celebrate our journey.</p>
+<div class="rule" aria-hidden="true"></div>
+<p class="date">SUNDAY, 1 NOVEMBER</p><p class="time">7:00 PM onwards</p><h2 class="venue">The Grand Palace</h2><p class="city">New Delhi</p>
+<p class="card-note">A special evening,<br>made sweeter by you.</p>
+</div></article></div>
+<div class="env-piece pocket env-photo pocket-shape" aria-hidden="true"></div>
+<div class="env-piece flap" aria-hidden="true">
+<div class="flap-face env-photo flap-shape"></div>
+<div class="flap-shade flap-shape"></div>
+<div class="flap-inner flap-shape"><div class="env-photo"></div><div class="flap-crease"></div></div>
+<div class="flap-glow flap-shape"></div>
+</div>
+<div class="seal-wrap"><button class="seal" type="button" aria-label="Open Arun and Leela's anniversary invitation"><img src="assets/seal.png" alt="Burgundy floral wax seal" width="887" height="941"></button></div>
+</div>
+<p class="tap">A SILVER CELEBRATION</p><p class="closing">Your presence will make<br>our celebration even more special.<small>With love, Arun &amp; Leela</small></p>
+</section>
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+gsap.set('.flap',{transformPerspective:1700,transformOrigin:'50% 0%',rotationX:0});
+// Arrival: sealed envelope settles in.
+tl.fromTo('.env-group',{y:690,opacity:0,scale:.965},{y:640,opacity:1,scale:1,duration:1.5,ease:'power2.out'},0);
+tl.fromTo('.opening',{opacity:0,y:20},{opacity:1,y:0,duration:1.2,ease:'power2.out'},.2);
+tl.fromTo('.tap',{opacity:0},{opacity:1,duration:.5},.9);
+// Tap: the seal presses, then lifts off and releases the flap.
+tl.to('.seal-wrap',{scale:.92,duration:.12,ease:'power2.out'},2);
+tl.to('.seal-wrap',{scale:1.13,y:-26,rotation:-7,duration:.42,ease:'power2.out'},2.12);
+tl.to('.seal img',{filter:'drop-shadow(0px 26px 18px rgba(20,0,0,.42))',duration:.42,ease:'power2.out'},2.12);
+tl.to('.tap',{opacity:0,duration:.5},2.05);tl.to('.opening',{opacity:0,y:-15,duration:.7},2.15);
+// Flap swings toward the viewer and folds back over the top edge.
+tl.to('.flap',{rotationX:90,duration:.5,ease:'power2.in'},2.42);
+tl.to('.flap-shade',{opacity:.55,duration:.5,ease:'power2.in'},2.42);
+tl.set('.flap',{zIndex:2},2.92);tl.set('.flap-face',{opacity:0},2.92);tl.set('.flap-shade',{opacity:0},2.92);tl.set('.flap-inner',{opacity:1},2.92);
+tl.fromTo('.flap-glow',{opacity:0},{opacity:1,duration:.55,ease:'power2.out'},2.92);
+tl.to('.flap',{rotationX:180,duration:.6,ease:'power2.out'},2.92);
+// The card slides up out of the pocket, the envelope lowers, and the card tucks back in.
+tl.to('.letter',{y:-900,duration:1.75,ease:'power2.inOut'},3.3);
+tl.to('.env-group',{y:1000,duration:1.7,ease:'power2.inOut'},3.55);
+tl.to('.letter',{y:-845,duration:.7,ease:'sine.inOut'},5.05);
+// The seal comes to rest on the pocket point.
+tl.to('.seal-wrap',{scale:1,y:0,rotation:0,duration:.55,ease:'back.out(2.2)'},5.45);
+tl.to('.seal img',{filter:'drop-shadow(0px 5px 6px rgba(20,0,0,.5))',duration:.4,ease:'power2.in'},5.45);
+// Printed details.
+tl.fromTo('.line-one',{opacity:0,y:-15},{opacity:1,y:0,duration:1,stagger:.24,ease:'power2.out'},6.3);
+tl.fromTo('.names',{opacity:0,scale:.97},{opacity:1,scale:1,duration:1.2,ease:'sine.out'},7.7);
+tl.fromTo('.invitation',{opacity:0,y:20},{opacity:1,y:0,duration:1.2,ease:'power2.out'},9);
+tl.fromTo('.rule',{scaleX:0},{scaleX:1,duration:.8,ease:'power2.inOut'},10.8);
+tl.fromTo(['.date','.time'],{opacity:0},{opacity:1,duration:.8,stagger:.25,ease:'sine.out'},11.2);
+tl.fromTo(['.venue','.city'],{opacity:0,y:12},{opacity:1,y:0,duration:.9,stagger:.2,ease:'power2.out'},12.4);
+tl.fromTo('.card-note',{opacity:0},{opacity:1,duration:1,ease:'sine.out'},13.8);
+tl.fromTo('.closing',{opacity:0,y:16},{opacity:1,y:0,duration:1.2,ease:'sine.out'},15);
+window.__timelines = window.__timelines || {};window.__timelines.main = tl;
+</script><style>.seal-wrap.awaiting::before{content:'';position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(244,229,200,.6);animation:seal-pulse 2.4s ease-out infinite;pointer-events:none}@keyframes seal-pulse{0%{transform:scale(.88);opacity:0}25%{opacity:.9}100%{transform:scale(1.35);opacity:0}}@media(prefers-reduced-motion:reduce){.seal-wrap.awaiting::before{animation:none;opacity:0}}</style><script>
+const root = document.querySelector('#root');
+const seal = document.querySelector('.seal');
+const sealWrap = document.querySelector('.seal-wrap');
+const letter = document.querySelector('.letter');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+document.documentElement.style.cssText = 'width:100%;height:100%';
+document.body.style.cssText = 'width:100%;height:100%';
+root.style.cssText = 'position:fixed;left:50%;top:50%;width:1080px;height:1920px;transform-origin:center';
+document.querySelector('.tap').textContent = 'TAP THE SEAL TO OPEN';
+
+function fit() {
+  const scale = Math.min(innerWidth / 1080, innerHeight / 1920);
+  root.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+}
+
+function reveal() {
+  seal.disabled = true;
+  sealWrap.classList.remove('awaiting');
+  letter.removeAttribute('aria-hidden');
+  if (reduce.matches) {
+    tl.pause(18);
+  } else {
+    tl.play(2);
+  }
+}
+
+fit();
+addEventListener('resize', fit);
+tl.pause(1.7);
+letter.setAttribute('aria-hidden', 'true');
+sealWrap.classList.add('awaiting');
+seal.addEventListener('click', reveal);
+reduce.addEventListener('change', () => {
+  if (reduce.matches && seal.disabled) tl.pause(18);
+});
+</script></body></html>
